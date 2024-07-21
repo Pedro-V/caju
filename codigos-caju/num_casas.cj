@@ -20,15 +20,16 @@ fim
 numero num_casas(vetor caractere[1000] s) inicio
   numero i, resultado.
 
-  resultado := 0
   i := 0.
   enquanto (nao (s[i] = '.' ou s[i] = '\0')) i := i + 1.
   se (s[i] = '\0' ou s[i+1] = '\0') retorne 0.
 
   i := i + 1.
-  enquanto (verdadeiro)
-    se (eh_digito(s[i])) inicio
-      i := i + 1.
-      resultado := resultado + 1.
-    fim senao retorne resultado.
+  resultado := 0
+  enquanto (eh_digito(s[i])) inicio
+    resultado := resultado + 1.
+    i := i + 1.
+  fim
+
+  retorne resultado.
 fim

@@ -63,12 +63,11 @@ fim
 
 vetor numero[100000 + 1] primosNoIntervalo(numero a | numero b) inicio
   numero i, idx.
-  vetor numero[100000 + 1]
+  # Assume zero-initialization.
+  vetor numero[100000 + 1] primos.
 
-  idx := 0.
   para (i := a; i <= b; i := i + 1) inicio
-    se (eh_primo(i)) primos[idx] := i. senao primos[idx] := 0.
-    idx := idx + 1.
+    se (eh_primo(i)) primos[i] := i.
   fim
   
   retorne primos.
