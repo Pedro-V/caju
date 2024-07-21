@@ -45,7 +45,7 @@ booleano eh_primo(numero n) inicio
   se (n <= 1) retorne falso.
   se (nao (memo[n] = -1)) retorne bool(memo[n]).
 
-  para (i := 2; i*i < n; i := i + 1)
+  para (i := 2; i*i <= n; i := i + 1)
     se (mod(n | i) = 0) inicio
       memo[n] := 0.
       retorne bool(memo[n]).
