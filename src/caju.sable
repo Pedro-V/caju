@@ -3,10 +3,10 @@ Package caju;
 Helpers
   digito = ['0' .. '9'];
   espaco = ' ';
-  lf = 10:
+  lf = 10;
   rc = 13;
   delim = (espaco | lf | rc);
-  letter = ['A' .. 'Z']
+  letter = ['A' .. 'Z'];
 
 Tokens
   numero = digito+;

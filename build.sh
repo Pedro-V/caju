@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define variables for paths
-PACKAGE="calculadora"
+PACKAGE="caju"
 SRC_DIR="src"
 TARGET_DIR="target"
 LEXER_DAT="$PACKAGE/lexer/lexer.dat"
