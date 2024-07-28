@@ -1,15 +1,55 @@
-Package caju;
+ackage caju;
 
 Helpers
   digito = ['0' .. '9'];
   espaco = ' ';
+  underscore = '_';
   lf = 10;
   rc = 13;
   delim = (espaco | lf | rc);
-  letter = ['A' .. 'Z'];
+  letra = ['A' .. 'Z'] | ['a' .. 'z'];
+  ASCII = [#x20-#x7E];
 
 Tokens
-  numero = digito+;
+  comentario_linha = '#' (ASCII)*
+  comentario_bloco = {(ASCII)* }
+  tipo_caractere = 'caractere';
+  tipo_numero = 'numero';
+  tipo_booleano = 'booleano';
+  tipo_vetor = 'vetor';
+  tipo_vazio = 'vazio';
+  bloco_i = 'inicio';
+  bloco_f = 'fim';
+  ctr_enquanto = 'enquanto';
+  ctr_para_cada = 'para cada';
+  ctr_para = 'para';
+  ctr_se = 'se';
+  ctr_senao = 'senao';
+  sbrt_retorne = 'retorne';
+  soma = '+';
+  menos = '-';
+  mult = '*';
+  div = '/';
+  atribuicao = ':=';
+  ponto = '.';
+  menor = '<';
+  maior = '>';
+  menor_igual = '<=';
+  maior_igual = '>='
+  igual = '=';
+  bool_nao = 'nao';
+  bool_e = 'e';
+  bool_ou = 'ou';
+  bool_se = 'se';
+  par_E = '(';
+  par_D = ')';
+  chave_E = '[';
+  chave_D = ']';
+  caractere = ''' ASCII '''
+  string = '"' (ASCII)* '"'; 
+  numero = digito+ (, digito+)*;
+  booleano = 'verdadeiro' | 'falso'; 
+  identificador = letra (letra | underscore | digito)*;
   ws = delim+;
 
 Ignored Tokens
