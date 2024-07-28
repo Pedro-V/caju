@@ -15,7 +15,7 @@ public class Main {
 
     Lexer lexer = null;
     try {
-      lexer = new Lexer(new PushbackReader(new FileReader(arquivo), 1024)); 
+      lexer = new Lexer(new PushbackReader(new FileReader(arquivo), 2048)); 
     } catch (IOException ex) {
 			System.err.println(ex.getMessage());
       System.exit(1);
