@@ -3,10 +3,8 @@ import caju.lexer.*;
 import caju.node.*;
 import java.io.*;
 
-public class Main
-{
-	public static void main(String[] args)
-	{
+public class Main {
+	public static void main(String[] args) {
     String arquivo = "";
 		try {
 			arquivo = args[0];
@@ -35,4 +33,3 @@ public class Main
     }
 	}
 }
-
