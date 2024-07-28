@@ -1,4 +1,4 @@
--> vazio bubblesort(vetor numero [] numeros | numero tam) inicio
+-> vazio bubblesort(vetor numero[] numeros | numero tam) inicio
     numero i.
     numero j.
     para(i := 0; i < tam-1; i := i+1) inicio

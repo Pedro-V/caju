@@ -2,8 +2,8 @@
   numero n.
 
   exibir("Informe um numero, informaremos se ele é par ou ímpar.").
-  ler("%d", n).
-  se (mod(n | 2) = 0) entao exibir("%d é par" | n). senao exibir("%d é ímpar" | n).
+  ler(n).
+  se (mod(n | 2) = 0) entao exibir(n | " é par"). senao exibir(n | " é ímpar").
 
   retorne.
 fim

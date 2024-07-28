@@ -2,9 +2,9 @@
   vetor caractere[1000] s.
 
   exibir("Informe um numero e informaremos quantas casas decimais ele tem.").
-  ler("%s", s).
+  ler(s).
 
-  exibir("'%s' possui %d casas decimais.\n", s, num_casas(s)).
+  exibir(s | " possui " | num_casas(s) | " casas decimais.\n").
   retorne.
 fim
 
