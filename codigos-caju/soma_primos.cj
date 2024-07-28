@@ -13,10 +13,10 @@ vetor numero[100000 + 1] memo.
   exibir("Para qual intervalo de números você que a soma de primos?\n").
   exibir("Obs: Limites de intervalo entre 0 e 100000\n").
 
-  enquanto (ler("%d %d" | a | b)) inicio
+  enquanto (ler(a | b)) inicio
     primos := primosNoIntervalo(a | b).
     resultado := soma(primos).
-    exibir("Resultado: %d\n" | resultado).
+    exibir("Resultado: " | resultado).
   fim
 
   retorne 0.
