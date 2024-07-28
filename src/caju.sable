@@ -1,4 +1,4 @@
-ackage caju;
+Package caju;
 
 Helpers
   digito = ['0' .. '9'];
@@ -6,13 +6,15 @@ Helpers
   underscore = '_';
   lf = 10;
   rc = 13;
+  eol = (lf | rc | lf rc);
   delim = (espaco | lf | rc);
   letra = ['A' .. 'Z'] | ['a' .. 'z'];
-  ASCII = [#x20-#x7E];
+  ascii = [0 .. 0xffff];
+  ascii_but_eol = [ascii - [lf + rc]];
 
 Tokens
-  comentario_linha = '#' (ASCII)*
-  comentario_bloco = {(ASCII)* }
+  comentario_linha = '#' ascii_but_eol* eol;
+  comentario_bloco = '{' ascii* '}';
   tipo_caractere = 'caractere';
   tipo_numero = 'numero';
   tipo_booleano = 'booleano';
@@ -22,10 +24,15 @@ Tokens
   bloco_f = 'fim';
   ctr_enquanto = 'enquanto';
   ctr_para_cada = 'para cada';
+  ctr_para_cada_sep = ':';
   ctr_para = 'para';
   ctr_se = 'se';
   ctr_senao = 'senao';
   sbrt_retorne = 'retorne';
+  virg = ',';
+  indicador_comeco = '->';
+  sep_for = ';';
+  sep_arg = '|';
   soma = '+';
   menos = '-';
   mult = '*';
@@ -35,22 +42,24 @@ Tokens
   menor = '<';
   maior = '>';
   menor_igual = '<=';
-  maior_igual = '>='
+  maior_igual = '>=';
   igual = '=';
   bool_nao = 'nao';
   bool_e = 'e';
   bool_ou = 'ou';
   bool_se = 'se';
-  par_E = '(';
-  par_D = ')';
-  chave_E = '[';
-  chave_D = ']';
-  caractere = ''' ASCII '''
-  string = '"' (ASCII)* '"'; 
-  numero = digito+ (, digito+)*;
+  par_esq = '(';
+  par_dir = ')';
+  chave_esq = '[';
+  chave_dir = ']';
+  caractere = ''' ('\')? ascii ''';
+  string = '"' [ascii - '"']* '"'; 
+  numero = digito+ (',' digito+)?;
   booleano = 'verdadeiro' | 'falso'; 
   identificador = letra (letra | underscore | digito)*;
   ws = delim+;
 
 Ignored Tokens
   ws;
+  comentario_linha;
+  comentario_bloco;
