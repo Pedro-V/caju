@@ -60,6 +60,4 @@ Tokens
   ws = delim+;
 
 Ignored Tokens
-  ws;
-  comentario_linha;
-  comentario_bloco;
+  ws, comentario_linha, comentario_bloco;
