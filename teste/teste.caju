@@ -1,0 +1,50 @@
+#comentario de linha
+{
+Comentario de bloco
+}
+caractere
+numero
+booleano
+vetor 
+vazio
+inicio
+fim
+enquanto
+para cada
+:
+para
+se
+senao
+retorne
+,
+->
+;
+|
++
+-
+*
+/
+:=
+.
+<
+>
+<=
+>=
+=
+nao
+e
+ou
+se
+(
+)
+[
+]
+'a'
+"abcdefghijklmnopqrstuvwxyz"
+1234567890
+12,309
+verdadeiro
+falso
+identificador
+abcdefghijklmnopqrstuvwxyz1234567890
+{Comentario de bloco} caractere numero booleano vetor  vazio inicio fim enquanto para cada : para se senao retorne , -> ; | + - * / := . < > <= >= = nao e ou se ( ) [ ] 'a' "abcdefghijklmnopqrstuvwxyz" 1234567890 12,309 verdadeiro falso identificador abcdefghijklmnopqrstuvwxyz1234567890
