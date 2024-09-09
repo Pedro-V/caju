@@ -62,3 +62,74 @@ Tokens
 
 Ignored Tokens
   ws, comentario_linha, comentario_bloco;
+
+
+Productions
+
+programa = dec_variavel* dec_funcao*;
+
+dec_variavel = tipo lista_nomes ponto;
+
+lista_nomes = identificador virg_id_fecho*;
+
+virg_id_fecho = virg identificador;
+
+tipo = {tipo_base} tipo_base
+      | {tipo_vetor} tipo_vetor tipo_base chave_exp_chave chave_exp_chave*;
+
+chave_exp_chave = chave_esq exp chave_dir;
+
+tipo_base = {tipo_num} numero 
+          | {tipo_char} caractere
+          | {tipo_bool} booleano;
+
+dec_funcao = indicador_comeco? tipo_retorno identificador par_esq parametros par_dir bloco;
+
+tipo_retorno = {tipo} tipo
+              | {tipo_vazio} tipo_vazio;
+
+parametros = {param} parametro parametro_fecho*
+            | {empty};
+
+parametro_fecho = sep_arg parametro;
+
+parametro = tipo identificador;
+
+bloco = bloco_i dec_variavel* comando* bloco_f;
+
+atrib = var atribuicao exp;
+
+lista_atrib = atrib virg_atrib_fecho*;
+
+virg_atrib_fecho = virg atrib;
+
+comando = {comando_se} ctr_se par_esq exp par_dir comando
+        | {comando_se_se_senao} ctr_se par_esq exp par_dir comando ctr_senao comando
+        | {comando_enquanto} ctr_enquanto par_esq exp par_dir comando
+        | {comando_para} ctr_para par_esq lista_atrib sep_for exp sep_for lista_atrib par_dir comando
+        | {comando_para_cada} ctr_para_cada par_esq tipo identificador ctr_para_cada_sep identificador par_dir comando
+        | {comando_atrib} atrib ponto
+        | {comando_retorne} retorne exp* ponto
+        | {comando_bloco} bloco
+        | {comando_chamada} chamada ponto;
+
+var = identificador
+    | var chave_esq exp chave_dir;
+
+// resolver ambiguidade
+exp = 
+
+chamada = identificador par_esq lista_exp par_dir;
+
+lista_exp = exp sep_exp_fecho*
+          | {empty};
+
+sep_exp_fecho = sep_arg exp
+
+
+
+
+
+
+
+
