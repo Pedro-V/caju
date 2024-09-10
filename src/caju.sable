@@ -34,7 +34,7 @@ Tokens
   indicador_comeco = '->';
   sep_for = ';';
   sep_arg = '|';
-  soma = '+';
+  mais = '+';
   menos = '-';
   mult = '*';
   div = '/';
@@ -75,7 +75,7 @@ lista_nomes = identificador virg_id_fecho*;
 virg_id_fecho = virg identificador;
 
 tipo = {tipo_base} tipo_base
-      | {tipo_vetor} tipo_vetor tipo_base chave_exp_chave chave_exp_chave*;
+      | {tipo_vetor} tipo_vetor tipo_base chave_esq exp chave_dir chave_exp_chave*;
 
 chave_exp_chave = chave_esq exp chave_dir;
 
@@ -103,9 +103,16 @@ lista_atrib = atrib virg_atrib_fecho*;
 
 virg_atrib_fecho = virg atrib;
 
-comando = {comando_se} ctr_se par_esq exp par_dir comando
-        | {comando_se_se_senao} ctr_se par_esq exp par_dir comando ctr_senao comando
-        | {comando_enquanto} ctr_enquanto par_esq exp par_dir comando
+comando = {dec_casam} dec_casam 
+         | {dec_nao_casam} dec_nao_casam;
+
+dec_casam = {comando_se_senao_casam} ctr_se par_esq exp par_dir dec_casam ctr_senao dec_casam
+            | {comando1} comando1;
+
+dec_nao_casam = {comando_se_nao_casam} ctr_se par_esq exp par_dir comando
+                | {comando_se_senao_nao_casam} ctr_se par_esq exp par_dir dec_casam ctr_senao dec_nao_casam;
+
+comando1 = {comando_enquanto} ctr_enquanto par_esq exp par_dir comando
         | {comando_para} ctr_para par_esq lista_atrib sep_for exp sep_for lista_atrib par_dir comando
         | {comando_para_cada} ctr_para_cada par_esq tipo identificador ctr_para_cada_sep identificador par_dir comando
         | {comando_atrib} atrib ponto
@@ -117,14 +124,43 @@ var = identificador
     | var chave_esq exp chave_dir;
 
 // resolver ambiguidade
-exp = 
+exp = exp bool_ou exp2;
+
+exp2 = exp2 bool_e exp3;
+
+exp3 = bool_nao exp4;
+
+exp4 = {exp_igual} exp4 igual exp5
+      | {exp_menor_igual} exp4 menor_igual exp5 
+      | {exp_maior_igual} exp4 maior_igual exp5
+      | {exp_menor_igual} exp4 menor_igual exp5
+      | {exp_menor} exp4 menor exp5
+      | {exp_amaior} exp4 maior exp5;
+
+exp5 = exp5 soma_sub exp6;
+
+soma_sub = {soma} mais 
+          | {subtracao} menos;
+
+exp6 = exp6 mult_div exp7;
+
+mult_div = {mult} mult
+          | {div} div;
+
+exp7 = {chamada} chamada 
+      | {exp_parentese} exp8;
+
+exp8 = par_esq exp par_dir 
+      | {num} numero
+      | {char} caractere
+      | {bool} booleano;
 
 chamada = identificador par_esq lista_exp par_dir;
 
 lista_exp = exp sep_exp_fecho*
           | {empty};
 
-sep_exp_fecho = sep_arg exp
+sep_exp_fecho = sep_arg exp;
 
 
 
