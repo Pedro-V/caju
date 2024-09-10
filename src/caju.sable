@@ -1,5 +1,8 @@
 Package caju;
 
+// ----------------------------------------------------------------------------
+// Léxico.
+
 Helpers
   digito = ['0' .. '9'];
   espaco = ' ';
@@ -63,6 +66,9 @@ Tokens
 Ignored Tokens
   ws, comentario_linha, comentario_bloco;
 
+
+// ----------------------------------------------------------------------------
+// Sintático.
 
 Productions
 
@@ -161,11 +167,3 @@ lista_exp = exp sep_exp_fecho*
           | {empty};
 
 sep_exp_fecho = sep_arg exp;
-
-
-
-
-
-
-
-
