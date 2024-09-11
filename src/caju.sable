@@ -112,24 +112,26 @@ virg_atrib_fecho = virg atrib;
 comando = {dec_casam} dec_casam 
          | {dec_nao_casam} dec_nao_casam;
 
-dec_casam = {comando_se_senao_casam} ctr_se par_esq exp par_dir dec_casam ctr_senao dec_casam
+dec_casam = {comando_se_senao_casam} ctr_se par_esq exp par_dir [esq]:dec_casam ctr_senao [dir]:dec_casam
             | {comando1} comando1;
+
+//senao = ctr_senao;
 
 dec_nao_casam = {comando_se_nao_casam} ctr_se par_esq exp par_dir comando
                 | {comando_se_senao_nao_casam} ctr_se par_esq exp par_dir dec_casam ctr_senao dec_nao_casam;
 
 comando1 = {comando_enquanto} ctr_enquanto par_esq exp par_dir comando
-        | {comando_para} ctr_para par_esq lista_atrib sep_for exp sep_for lista_atrib par_dir comando
-        | {comando_para_cada} ctr_para_cada par_esq tipo identificador ctr_para_cada_sep identificador par_dir comando
+        | {comando_para} ctr_para par_esq [esq1]:lista_atrib [esq2]:sep_for exp [dir1]:sep_for [dir2]:lista_atrib par_dir comando
+        | {comando_para_cada} ctr_para_cada par_esq tipo [esq1]:identificador ctr_para_cada_sep [esq2]:identificador par_dir comando
         | {comando_atrib} atrib ponto
-        | {comando_retorne} retorne exp* ponto
+        | {comando_retorne} sbrt_retorne exp* ponto
         | {comando_bloco} bloco
         | {comando_chamada} chamada ponto;
 
-var = identificador
-    | var chave_esq exp chave_dir;
+var = {id} identificador
+    | {vetor_id} var chave_esq exp chave_dir;
 
-// resolver ambiguidade
+
 exp = exp bool_ou exp2;
 
 exp2 = exp2 bool_e exp3;
@@ -139,7 +141,6 @@ exp3 = bool_nao exp4;
 exp4 = {exp_igual} exp4 igual exp5
       | {exp_menor_igual} exp4 menor_igual exp5 
       | {exp_maior_igual} exp4 maior_igual exp5
-      | {exp_menor_igual} exp4 menor_igual exp5
       | {exp_menor} exp4 menor exp5
       | {exp_amaior} exp4 maior exp5;
 
