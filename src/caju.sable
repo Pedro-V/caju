@@ -110,12 +110,10 @@ lista_atrib = atrib virg_atrib_fecho*;
 virg_atrib_fecho = virg atrib;
 
 comando = {dec_casam} dec_casam 
-         | {dec_nao_casam} dec_nao_casam;
+         | {dec_nao_casam} dec_nao_casam
+         | {comando1} comando1;
 
-dec_casam = {comando_se_senao_casam} ctr_se par_esq exp par_dir [esq]:dec_casam ctr_senao [dir]:dec_casam
-            | {comando1} comando1;
-
-//senao = ctr_senao;
+dec_casam = {comando_se_senao_casam} ctr_se par_esq exp par_dir [esq]:dec_casam ctr_senao [dir]:dec_casam;
 
 dec_nao_casam = {comando_se_nao_casam} ctr_se par_esq exp par_dir comando
                 | {comando_se_senao_nao_casam} ctr_se par_esq exp par_dir dec_casam ctr_senao dec_nao_casam;
