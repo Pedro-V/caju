@@ -134,23 +134,23 @@ exp = exp bool_ou exp2;
 
 exp2 = exp2 bool_e exp3;
 
-exp3 = bool_nao exp4;
+exp3 = {exp_igual} exp3 igual exp4
+      | {exp_menor_igual} exp3 menor_igual exp4 
+      | {exp_maior_igual} exp3 maior_igual exp4
+      | {exp_menor} exp3 menor exp4
+      | {exp_amaior} exp3 maior exp4;
 
-exp4 = {exp_igual} exp4 igual exp5
-      | {exp_menor_igual} exp4 menor_igual exp5 
-      | {exp_maior_igual} exp4 maior_igual exp5
-      | {exp_menor} exp4 menor exp5
-      | {exp_amaior} exp4 maior exp5;
-
-exp5 = exp5 soma_sub exp6;
+exp4 = exp4 soma_sub exp5;
 
 soma_sub = {soma} mais 
           | {subtracao} menos;
 
-exp6 = exp6 mult_div exp7;
+exp5 = exp5 mult_div exp6;
 
 mult_div = {mult} mult
           | {div} div;
+
+exp6 = bool_nao exp7;
 
 exp7 = {chamada} chamada 
       | {exp_parentese} exp8;
