@@ -81,7 +81,7 @@ lista_nomes = identificador virg_id_fecho*;
 virg_id_fecho = virg identificador;
 
 tipo = {tipo_base} tipo_base
-      | {tipo_vetor} tipo_vetor tipo_base chave_esq exp chave_dir chave_exp_chave*;
+      | {tipo_vetor} tipo_vetor tipo_base [esq]:chave_exp_chave [dir]:chave_exp_chave*;
 
 chave_exp_chave = chave_esq exp chave_dir;
 
@@ -130,32 +130,38 @@ var = {id} identificador
     | {vetor_id} var chave_esq exp chave_dir;
 
 
-exp = exp bool_ou exp2;
+exp = {exp_ou} exp bool_ou exp2
+      | {exp2} exp2;
 
-exp2 = exp2 bool_e exp3;
+exp2 = {exp_e} exp2 bool_e exp3
+      | {exp3} exp3;
 
 exp3 = {exp_igual} exp3 igual exp4
       | {exp_menor_igual} exp3 menor_igual exp4 
       | {exp_maior_igual} exp3 maior_igual exp4
       | {exp_menor} exp3 menor exp4
-      | {exp_amaior} exp3 maior exp4;
+      | {exp_amaior} exp3 maior exp4
+      | {exp4} exp4;
 
-exp4 = exp4 soma_sub exp5;
+exp4 = {exp_soma} exp4 soma_sub exp5
+      | {exp5} exp5;
 
 soma_sub = {soma} mais 
           | {subtracao} menos;
 
-exp5 = exp5 mult_div exp6;
+exp5 = {exp_mult} exp5 mult_div exp6
+      | {exp6} exp6;
 
 mult_div = {mult} mult
           | {div} div;
 
-exp6 = bool_nao exp7;
+exp6 = {exp_nao} bool_nao exp7
+      | {exp7} exp7;
 
 exp7 = {chamada} chamada 
-      | {exp_parentese} exp8;
+      | {exp8} exp8;
 
-exp8 = par_esq exp par_dir 
+exp8 = {exp_parentese} par_esq exp par_dir 
       | {num} numero
       | {char} caractere
       | {bool} booleano;
