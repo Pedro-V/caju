@@ -126,9 +126,9 @@ comando1 = {comando_enquanto} ctr_enquanto par_esq exp par_dir comando
         | {comando_bloco} bloco
         | {comando_chamada} chamada ponto;
 
-var = {id} identificador
-    | {vetor_id} var chave_esq exp chave_dir;
+var = identificador chave_exp_chave*;
 
+chamada = identificador par_esq lista_exp par_dir;
 
 exp = {exp_ou} exp bool_ou exp2
       | {exp2} exp2;
@@ -158,17 +158,14 @@ mult_div = {mult} mult
 exp6 = {exp_nao} bool_nao exp7
       | {exp7} exp7;
 
-exp7 = {chamada} chamada 
-      | {exp8} exp8;
-
-exp8 = {exp_parentese} par_esq exp par_dir 
+exp7 = {exp_parentese} par_esq exp par_dir 
       | {num} numero
       | {char} caractere
-      | {bool} booleano;
+      | {bool} booleano
+      | {exp_var} var
+      | {chamada} chamada;
 
-chamada = identificador par_esq lista_exp par_dir;
-
-lista_exp = exp sep_exp_fecho*
+lista_exp = {lista_exp} exp sep_exp_fecho*
           | {empty};
 
 sep_exp_fecho = sep_arg exp;
