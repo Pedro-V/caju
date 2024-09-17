@@ -1,11 +1,12 @@
 package caju;
+import caju.parser.*;
 import caju.lexer.*;
 import caju.node.*;
 import java.io.*;
 
 public class Main {
 	public static void main(String[] args) {
-    String arquivo = "";
+    String arquivo = "teste/teste.caju";
 		try {
 			arquivo = args[0];
     } catch (ArrayIndexOutOfBoundsException ex) {
@@ -21,6 +22,7 @@ public class Main {
       System.exit(1);
     }
 
+/*
     try {
       Token token;
       while(!((token = lexer.next()) instanceof EOF)) {
@@ -31,5 +33,19 @@ public class Main {
       System.err.println(ex.getMessage());
       System.exit(1);
     }
-	}
+
+*/
+
+    try {
+      Parser p = new Parser(lexer);
+
+      Start tree = p.parse();
+    //Imprime árvore na saída padrão
+    //tree.apply(new ASTPrinter());
+    //Imprime árvore em interface gráfica
+      tree.apply(new ASTDisplay());
+    } catch(Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
 }
