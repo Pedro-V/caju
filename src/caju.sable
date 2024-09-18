@@ -81,7 +81,7 @@ lista_nomes = identificador virg_id_fecho*;
 virg_id_fecho = virg identificador;
 
 tipo = {tipo_base} tipo_base
-      | {tipo_vetor} tipo_vetor tipo_base [esq]:colch_exp_colch [dir]:colch_exp_colch*;
+      | {tipo_vetor} tipo_vetor tipo_base colch_exp_colch+;
 
 colch_exp_colch = colch_esq exp colch_dir;
 
@@ -113,7 +113,8 @@ comando = {dec_casam} dec_casam
          | {dec_nao_casam} dec_nao_casam
          | {comando1} comando1;
 
-dec_casam = {comando_se_senao_casam} ctr_se par_esq exp par_dir [esq]:dec_casam ctr_senao [dir]:dec_casam;
+dec_casam = {comando_se_senao_casam} ctr_se par_esq exp par_dir [esq]:dec_casam ctr_senao [dir]:dec_casam
+            | {comando1} comando1;
 
 dec_nao_casam = {comando_se_nao_casam} ctr_se par_esq exp par_dir comando
                 | {comando_se_senao_nao_casam} ctr_se par_esq exp par_dir dec_casam ctr_senao dec_nao_casam;
@@ -126,7 +127,7 @@ comando1 = {comando_enquanto} ctr_enquanto par_esq exp par_dir comando
         | {comando_bloco} bloco
         | {comando_chamada} chamada ponto;
 
-var = {array_access} identificador colch_exp_colch*;
+var = identificador colch_exp_colch*;
 
 chamada = identificador par_esq lista_exp par_dir;
 
@@ -136,39 +137,42 @@ exp = {exp_ou} exp bool_ou exp2
 exp2 = {exp_e} exp2 bool_e exp3
       | {exp3} exp3;
 
-exp3 = {exp_igual} exp3 igual exp4
-      | {exp_menor_igual} exp3 menor_igual exp4 
-      | {exp_maior_igual} exp3 maior_igual exp4
-      | {exp_menor} exp3 menor exp4
-      | {exp_amaior} exp3 maior exp4
+exp3 = {exp_logica} exp3 operador_logico exp4
       | {exp4} exp4;
 
 exp4 = {exp_soma} exp4 soma_sub exp5
       | {exp5} exp5;
 
-soma_sub = {soma} mais 
-          | {subtracao} menos;
-
 exp5 = {exp_mult} exp5 mult_div exp6
       | {exp6} exp6;
-
-mult_div = {mult} mult
-          | {div} div;
 
 exp6 = {exp_nao} bool_nao exp7
       | {exp7} exp7;    
 
-exp7 = {var} var 
+exp7 = {exp_parentese} par_esq exp par_dir
+      | {exp8} exp8;
+
+exp8 = {var} var 
       | {num} numero
       | {char} caractere
       | {bool} booleano
-      | {exp8} exp8;
-
-exp8 = {exp_parentese} par_esq exp9 par_dir
+      | {string} string
       | {exp9} exp9;
 
 exp9 = {chamada} chamada
-      | {exp} exp;  
+      | {exp} exp;
+
+operador_logico = {igual} igual
+            | {menor_igual} menor_igual
+            | {maior_igual} maior_igual
+            | {menor} menor
+            | {maior} maior;
+
+soma_sub = {soma} mais 
+          | {subtracao} menos;
+
+mult_div = {mult} mult
+          | {div} div;
 
 lista_exp = {lista_exp} exp sep_exp_fecho*
           | {empty};
