@@ -25,7 +25,7 @@ numero num_casas(vetor caractere[1000] s) inicio
   se (s[i] = '\0' ou s[i+1] = '\0') retorne 0.
 
   i := i + 1.
-  resultado := 0
+  resultado := 0.
   enquanto (eh_digito(s[i])) inicio
     resultado := resultado + 1.
     i := i + 1.

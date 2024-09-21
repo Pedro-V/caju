@@ -3,7 +3,7 @@
 
   exibir("Informe um numero, informaremos se ele é par ou ímpar.").
   ler(n).
-  se (mod(n | 2) = 0) entao exibir(n | " é par"). senao exibir(n | " é ímpar").
+  se (mod(n | 2) = 0) exibir(n | " é par"). senao exibir(n | " é ímpar").
 
   retorne.
 fim
