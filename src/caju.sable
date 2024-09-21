@@ -113,8 +113,7 @@ comando = {dec_casam} dec_casam
          | {dec_nao_casam} dec_nao_casam
          | {comando1} comando1;
 
-dec_casam = {comando_se_senao_casam} ctr_se par_esq exp par_dir [esq]:dec_casam ctr_senao [dir]:dec_casam
-            | {comando1} comando1;
+dec_casam = {comando_se_senao_casam} ctr_se par_esq exp par_dir [esq]:dec_casam ctr_senao [dir]:dec_casam;
 
 dec_nao_casam = {comando_se_nao_casam} ctr_se par_esq exp par_dir comando
                 | {comando_se_senao_nao_casam} ctr_se par_esq exp par_dir dec_casam ctr_senao dec_nao_casam;
@@ -123,11 +122,12 @@ comando1 = {comando_enquanto} ctr_enquanto par_esq exp par_dir comando
         | {comando_para} ctr_para par_esq [esq1]:lista_atrib [esq2]:sep_for exp [dir1]:sep_for [dir2]:lista_atrib par_dir comando
         | {comando_para_cada} ctr_para_cada par_esq tipo [esq1]:identificador ctr_para_cada_sep [esq2]:identificador par_dir comando
         | {comando_atrib} atrib ponto
-        | {comando_retorne} sbrt_retorne exp* ponto
+        | {comando_retorne} sbrt_retorne exp? ponto
         | {comando_bloco} bloco
         | {comando_chamada} chamada ponto;
 
-var = identificador colch_exp_colch*;
+var = {id} identificador
+      | {var2} var colch_esq exp colch_dir;
 
 chamada = identificador par_esq lista_exp par_dir;
 
@@ -137,7 +137,7 @@ exp = {exp_ou} exp bool_ou exp2
 exp2 = {exp_e} exp2 bool_e exp3
       | {exp3} exp3;
 
-exp3 = {exp_logica} exp3 operador_logico exp4
+exp3 = {exp_logica} exp3 operador_comparativo exp4
       | {exp4} exp4;
 
 exp4 = {exp_soma} exp4 soma_sub exp5
@@ -146,23 +146,18 @@ exp4 = {exp_soma} exp4 soma_sub exp5
 exp5 = {exp_mult} exp5 mult_div exp6
       | {exp6} exp6;
 
-exp6 = {exp_nao} bool_nao exp7
+exp6 = {exp_nao} bool_nao exp6
       | {exp7} exp7;    
 
 exp7 = {exp_parentese} par_esq exp par_dir
-      | {exp8} exp8;
-
-exp8 = {var} var 
+      | {var} var 
       | {num} numero
       | {char} caractere
       | {bool} booleano
       | {string} string
-      | {exp9} exp9;
+      | {chamada} chamada;
 
-exp9 = {chamada} chamada
-      | {exp} exp;
-
-operador_logico = {igual} igual
+operador_comparativo = {igual} igual
             | {menor_igual} menor_igual
             | {maior_igual} maior_igual
             | {menor} menor
