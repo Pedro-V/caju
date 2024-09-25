@@ -150,11 +150,15 @@ exp6 = {exp_nao} bool_nao exp6
 
 exp7 = {exp_parentese} par_esq exp par_dir
       | {var} var 
-      | {num} numero
+      | {num} numero_pos_neg
       | {char} caractere
       | {bool} booleano
       | {string} string
       | {chamada} chamada;
+
+
+numero_pos_neg = {num_pos} numero
+                | {num_neg} menos numero;
 
 operador_comparativo = {igual} igual
             | {menor_igual} menor_igual
