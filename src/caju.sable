@@ -130,25 +130,33 @@ var = {id} identificador
 
 chamada = identificador par_esq lista_exp par_dir;
 
-exp = {exp_ou} exp bool_ou exp2
-      | {exp2} exp2;
+exp = {exp_ou} exp_ou;
 
-exp2 = {exp_e} exp2 bool_e exp3
-      | {exp3} exp3;
+exp_ou = {exp_ou} exp_ou bool_ou exp_e
+      | {exp_e} exp_e;
 
-exp3 = {exp_logica} exp3 operador_comparativo exp4
-      | {exp4} exp4;
+exp_e = {exp_e} exp_e bool_e exp_comparativa
+      | {exp_comparativa} exp_comparativa;
 
-exp4 = {exp_soma} exp4 soma_sub exp5
-      | {exp5} exp5;
+exp_comparativa = {igual} exp_comparativa igual exp_soma_sub
+      | {menor_igual} exp_comparativa menor_igual exp_soma_sub
+      | {maior_igual} exp_comparativa maior_igual exp_soma_sub
+      | {menor} exp_comparativa menor exp_soma_sub
+      | {maior} exp_comparativa maior exp_soma_sub
+      | {exp_soma_sub} exp_soma_sub;
 
-exp5 = {exp_mult} exp5 mult_div exp6
-      | {exp6} exp6;
+exp_soma_sub = {soma} exp_soma_sub mais exp_mult_div
+      | {subtracao} exp_soma_sub menos exp_mult_div
+      | {exp_mult_div} exp_mult_div;
 
-exp6 = {exp_nao} bool_nao exp6
-      | {exp7} exp7;    
+exp_mult_div = {mult} exp_mult_div mult exp_nao
+      | {div} exp_mult_div div exp_nao
+      | {exp_nao} exp_nao;
 
-exp7 = {exp_parentese} par_esq exp par_dir
+exp_nao = {exp_nao} bool_nao exp_nao
+      | {exp_parentese_literais} exp_parentese_literais;    
+
+exp_parentese_literais = {exp_parentese} par_esq exp par_dir
       | {var} var 
       | {num} numero_pos_neg
       | {char} caractere
@@ -165,12 +173,6 @@ operador_comparativo = {igual} igual
             | {maior_igual} maior_igual
             | {menor} menor
             | {maior} maior;
-
-soma_sub = {soma} mais 
-          | {subtracao} menos;
-
-mult_div = {mult} mult
-          | {div} div;
 
 lista_exp = {lista_exp} exp sep_exp_fecho*
           | {empty};
