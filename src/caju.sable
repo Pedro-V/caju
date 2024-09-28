@@ -130,51 +130,65 @@ var = {id} identificador
 
 chamada = identificador par_esq lista_exp par_dir;
 
-exp = {exp_ou} exp_ou;
-
-exp_ou = {exp_ou} exp_ou bool_ou exp_e
-      | {exp_e} exp_e;
-
-exp_e = {exp_e} exp_e bool_e exp_comparativa
-      | {exp_comparativa} exp_comparativa;
-
-exp_comparativa = {igual} exp_comparativa igual exp_soma_sub
-      | {menor_igual} exp_comparativa menor_igual exp_soma_sub
-      | {maior_igual} exp_comparativa maior_igual exp_soma_sub
-      | {menor} exp_comparativa menor exp_soma_sub
-      | {maior} exp_comparativa maior exp_soma_sub
-      | {exp_soma_sub} exp_soma_sub;
-
-exp_soma_sub = {soma} exp_soma_sub mais exp_mult_div
-      | {subtracao} exp_soma_sub menos exp_mult_div
-      | {exp_mult_div} exp_mult_div;
-
-exp_mult_div = {mult} exp_mult_div mult exp_nao
-      | {div} exp_mult_div div exp_nao
-      | {exp_nao} exp_nao;
-
-exp_nao = {exp_nao} bool_nao exp_nao
-      | {exp_parentese_literais} exp_parentese_literais;    
-
-exp_parentese_literais = {exp_parentese} par_esq exp par_dir
-      | {var} var 
-      | {num} numero_pos_neg
-      | {char} caractere
-      | {bool} booleano
-      | {string} string
-      | {chamada} chamada;
-
-
 numero_pos_neg = {num_pos} numero
                 | {num_neg} menos numero;
-
-operador_comparativo = {igual} igual
-            | {menor_igual} menor_igual
-            | {maior_igual} maior_igual
-            | {menor} menor
-            | {maior} maior;
 
 lista_exp = {lista_exp} exp sep_exp_fecho*
           | {empty};
 
 sep_exp_fecho = sep_arg exp;
+
+exp {-> a_exp} = {exp_ou} exp_ou {-> exp_ou.a_exp};
+
+exp_ou {-> a_exp} = {exp_ou} exp_ou bool_ou exp_e     {-> New a_exp.a_ou(exp_ou.a_exp, exp_e.a_exp)}
+      | {exp_e} exp_e                                 {-> exp_e.a_exp};
+
+exp_e {-> a_exp} = {exp_e} exp_e bool_e exp_comparacao      {-> New a_exp.a_e(exp_e.a_exp, exp_comparacao.a_exp)}
+      | {exp_comparacao} exp_comparacao                     {-> exp_comparacao.a_exp};
+
+exp_comparacao {-> a_exp} = {igual} exp_comparacao igual exp_soma_sub   {-> New a_exp.a_igual(exp_comparacao.a_exp, exp_soma_sub.a_exp)}
+      | {menor_igual} exp_comparacao menor_igual exp_soma_sub           {-> New a_exp.a_menor_igual(exp_comparacao.a_exp, exp_soma_sub.a_exp)}
+      | {maior_igual} exp_comparacao maior_igual exp_soma_sub           {-> New a_exp.a_maior_igual(exp_comparacao.a_exp, exp_soma_sub.a_exp)}
+      | {menor} exp_comparacao menor exp_soma_sub                       {-> New a_exp.a_menor(exp_comparacao.a_exp, exp_soma_sub.a_exp)}
+      | {maior} exp_comparacao maior exp_soma_sub                       {-> New a_exp.a_maior(exp_comparacao.a_exp, exp_soma_sub.a_exp)}
+      | {exp_soma_sub} exp_soma_sub                                     {-> exp_soma_sub.a_exp};
+
+exp_soma_sub {-> a_exp} = {soma} exp_soma_sub mais exp_mult_div   {-> New a_exp.a_soma(exp_soma_sub.a_exp, exp_mult_div.a_exp)}
+      | {subtracao} exp_soma_sub menos exp_mult_div               {-> New a_exp.a_subtracao(exp_soma_sub.a_exp, exp_mult_div.a_exp)}
+      | {exp_mult_div} exp_mult_div                               {-> exp_mult_div.a_exp};
+
+exp_mult_div  {-> a_exp} = {mult} exp_mult_div mult exp_nao       {-> New a_exp.a_mult(exp_mult_div.a_exp, exp_nao.a_exp)}
+      | {div} exp_mult_div div exp_nao                            {-> New a_exp.a_div(exp_mult_div.a_exp, exp_nao.a_exp)}
+      | {exp_nao} exp_nao                                         {-> exp_nao.a_exp};
+
+exp_nao {-> a_exp} = {exp_nao} bool_nao exp_nao             {-> exp_nao.a_exp}
+      | {exp_parentese_literais} exp_parentese_literais     {-> exp_parentese_literais.a_exp};    
+
+exp_parentese_literais {-> a_exp} = 
+      {exp_parentese} par_esq exp par_dir {-> exp.a_exp}
+      | {var} var                         {-> New a_exp.a_var(var)}
+      | {num} numero_pos_neg              {-> New a_exp.a_num(numero_pos_neg)}
+      | {char} caractere                  {-> New a_exp.a_char(caractere)}
+      | {bool} booleano                   {-> New a_exp.a_bool(booleano)}
+      | {string} string                   {-> New a_exp.a_string(string)}
+      | {chamada} chamada                 {-> New a_exp.a_chamada(chamada)};
+
+Abstract Syntax Tree
+
+a_exp = {a_ou} [esq]:a_exp [dir]:a_exp
+      | {a_e} [esq]:a_exp [dir]:a_exp
+      | {a_igual} [esq]:a_exp [dir]:a_exp
+      | {a_menor_igual} [esq]:a_exp [dir]:a_exp
+      | {a_maior_igual} [esq]:a_exp [dir]:a_exp
+      | {a_menor} [esq]:a_exp [dir]:a_exp
+      | {a_maior} [esq]:a_exp [dir]:a_exp
+      | {a_soma} [esq]:a_exp [dir]:a_exp
+      | {a_subtracao} [esq]:a_exp [dir]:a_exp
+      | {a_mult} [esq]:a_exp [dir]:a_exp
+      | {a_div} [esq]:a_exp [dir]:a_exp
+      | {a_var} var
+      | {a_num} numero_pos_neg 
+      | {a_char} caractere
+      | {a_bool} booleano
+      | {a_string} string
+      | {a_chamada} chamada;
