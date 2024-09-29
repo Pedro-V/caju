@@ -72,34 +72,43 @@ Ignored Tokens
 
 Productions
 
-programa = dec_variavel* dec_funcao*;
+programa {-> a_programa} = 
+      dec_variavel* dec_funcao*     {-> New a_programa.a_programa([dec_variavel.a_dec_variavel], [dec_funcao.a_dec_funcao])};
 
-dec_variavel = tipo lista_nomes ponto;
+dec_variavel {-> a_dec_variavel} = 
+      tipo var virg_var_fecho* ponto      {-> New a_dec_variavel.a_dec_variaveis(tipo.a_tipo, [var.a_var, virg_var_fecho.a_var])};
 
-lista_nomes = identificador virg_id_fecho*;
+virg_var_fecho {-> a_var} = 
+      virg var      {-> var.a_var};
 
-virg_id_fecho = virg identificador;
+tipo {-> a_tipo} = 
+      {tipo_base} tipo_base                                 {-> New a_tipo.a_tipo_base(tipo_base.a_tipo_base)}
+      | {tipo_vetor} tipo_vetor tipo_base colch_exp_colch+  {-> New a_tipo.a_tipo_vetor(tipo_base.a_tipo_base, [colch_exp_colch.a_exp])};
 
-tipo = {tipo_base} tipo_base
-      | {tipo_vetor} tipo_vetor tipo_base colch_exp_colch+;
+colch_exp_colch {-> a_exp} = 
+      colch_esq exp colch_dir {-> exp.a_exp};
 
-colch_exp_colch = colch_esq exp colch_dir;
+tipo_base {-> a_tipo_base} = 
+            {tipo_num} tipo_numero        {-> New a_tipo_base.a_tipo_num(tipo_numero)}
+          | {tipo_char} tipo_caractere    {-> New a_tipo_base.a_tipo_char(tipo_caractere)}
+          | {tipo_bool} tipo_booleano     {-> New a_tipo_base.a_tipo_bool(tipo_bool)};
 
-tipo_base = {tipo_num} tipo_numero 
-          | {tipo_char} tipo_caractere
-          | {tipo_bool} tipo_booleano;
+dec_funcao {-> a_dec_funcao} = 
+      {funcao} tipo_retorno identificador par_esq parametros par_dir bloco                            {-> New a_dec_funcao.a_dec_funcoes(tipo_retorno.a_tipo_retorno, identificador, parametros.a_parametros, bloco)}
+      | {funcao_comeco} indicador_comeco tipo_retorno identificador par_esq parametros par_dir bloco  {-> New a_dec_funcao.a_dec_funcoes_comeco(tipo_retorno.a_tipo_retorno, identificador, parametros.a_parametros, bloco)};
 
-dec_funcao = indicador_comeco? tipo_retorno identificador par_esq parametros par_dir bloco;
+tipo_retorno {-> a_tipo_retorno} = {tipo} tipo  {-> tipo.a_tipo}
+              | {tipo_vazio} tipo_vazio         {-> New a_tipo_retorno.a_tipo_vazio(tipo_vazio)};
 
-tipo_retorno = {tipo} tipo
-              | {tipo_vazio} tipo_vazio;
+parametros {-> a_parametros} = 
+            {param} parametro parametro_fecho*  {-> New a_parametros.a_param([parametro.a_parametro, parametro_fecho.a_parametro])}
+            | {empty}                           {-> New a_parametros.a_empty()};
 
-parametros = {param} parametro parametro_fecho*
-            | {empty};
+parametro_fecho {-> a_parametro} = 
+      sep_arg parametro {-> parametro.a_parametro};
 
-parametro_fecho = sep_arg parametro;
-
-parametro = tipo identificador;
+parametro {-> a_parametro} = 
+      tipo identificador {-> New a_parametro.a_parametro(tipo.a_tipo, identificador)};
 
 bloco = bloco_i dec_variavel* comando* bloco_f;
 
@@ -125,8 +134,9 @@ comando_casam = {comando_se} ctr_se par_esq exp par_dir comando
               | {comando_para_cada} ctr_para_cada par_esq tipo [esq1]:identificador ctr_para_cada_sep [esq2]:identificador par_dir comando;
 
 
-var = {id} identificador
-      | {var2} var colch_esq exp colch_dir;
+var {-> a_var} = 
+      {id} identificador                        {-> New a_var.a_id(identificador)}
+      | {id_exp} identificador colch_exp_colch+ {-> New a_var.a_id_exp(identificador, [colch_exp_colch.a_exp])};
 
 chamada = identificador par_esq lista_exp par_dir;
 
@@ -138,7 +148,7 @@ lista_exp = {lista_exp} exp sep_exp_fecho*
 
 sep_exp_fecho = sep_arg exp;
 
-exp {-> a_exp} = {exp_ou} exp_ou {-> exp_ou.a_exp};
+exp {-> a_exp} = {exp_ou} exp_ou    {-> exp_ou.a_exp};
 
 exp_ou {-> a_exp} = {exp_ou} exp_ou bool_ou exp_e     {-> New a_exp.a_ou(exp_ou.a_exp, exp_e.a_exp)}
       | {exp_e} exp_e                                 {-> exp_e.a_exp};
@@ -174,6 +184,31 @@ exp_parentese_literais {-> a_exp} =
       | {chamada} chamada                 {-> New a_exp.a_chamada(chamada)};
 
 Abstract Syntax Tree
+
+a_programa = {a_programa} [a_dec_variaveis]:a_dec_variavel* [a_dec_funcoes]:a_dec_funcao;
+
+a_dec_variavel = {a_dec_variaveis} a_tipo [variaveis]:a_var+;
+
+a_dec_funcao = {a_dec_funcoes} a_tipo_retorno identificador parametros bloco
+            | {a_dec_funcoes_comeco} a_tipo_retorno identificador parametros bloco;
+
+a_parametros = {a_param} [parametros]:a_parametro+;
+
+a_parametro = {a_parametro} a_tipo identificador 
+            | {a_empty};
+
+a_tipo = {a_tipo_base} a_tipo_base 
+      | {a_tipo_vetor} a_tipo_base [exps]:a_exp+;     
+
+a_tipo_base = {a_tipo_num} tipo_numero 
+          | {a_tipo_char} tipo_caractere
+          | {a_tipo_bool} tipo_booleano;
+
+a_tipo_retorno = {a_tipo} a_tipo
+      | {a_tipo_vazio} tipo_vazio;
+
+a_var = {a_id} identificador
+      | {a_id_exp} identificador [exps]:a_exp+;
 
 a_exp = {a_ou} [esq]:a_exp [dir]:a_exp
       | {a_e} [esq]:a_exp [dir]:a_exp
