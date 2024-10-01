@@ -91,14 +91,15 @@ colch_exp_colch {-> a_exp} =
 tipo_base {-> a_tipo_base} = 
             {tipo_num} tipo_numero        {-> New a_tipo_base.a_tipo_num(tipo_numero)}
           | {tipo_char} tipo_caractere    {-> New a_tipo_base.a_tipo_char(tipo_caractere)}
-          | {tipo_bool} tipo_booleano     {-> New a_tipo_base.a_tipo_bool(tipo_bool)};
+          | {tipo_bool} tipo_booleano     {-> New a_tipo_base.a_tipo_bool(tipo_booleano)};
 
 dec_funcao {-> a_dec_funcao} = 
-      {funcao} tipo_retorno identificador par_esq parametros par_dir bloco                            {-> New a_dec_funcao.a_dec_funcoes(tipo_retorno.a_tipo_retorno, identificador, parametros.a_parametros, bloco)}
-      | {funcao_comeco} indicador_comeco tipo_retorno identificador par_esq parametros par_dir bloco  {-> New a_dec_funcao.a_dec_funcoes_comeco(tipo_retorno.a_tipo_retorno, identificador, parametros.a_parametros, bloco)};
+      {funcao} tipo_retorno identificador par_esq parametros par_dir bloco                            {-> New a_dec_funcao.a_dec_funcoes(tipo_retorno.a_tipo_retorno, identificador, parametros.a_parametros, bloco.a_bloco)}
+      | {funcao_comeco} indicador_comeco tipo_retorno identificador par_esq parametros par_dir bloco  {-> New a_dec_funcao.a_dec_funcoes_comeco(tipo_retorno.a_tipo_retorno, identificador, parametros.a_parametros, bloco.a_bloco)};
 
-tipo_retorno {-> a_tipo_retorno} = {tipo} tipo  {-> tipo.a_tipo}
-              | {tipo_vazio} tipo_vazio         {-> New a_tipo_retorno.a_tipo_vazio(tipo_vazio)};
+tipo_retorno {-> a_tipo_retorno} = 
+            {tipo} tipo                   {-> New a_tipo_retorno.a_tipo(tipo.a_tipo)}
+              | {tipo_vazio} tipo_vazio   {-> New a_tipo_retorno.a_tipo_vazio(tipo_vazio)};
 
 parametros {-> a_parametros} = 
             {param} parametro parametro_fecho*  {-> New a_parametros.a_param([parametro.a_parametro, parametro_fecho.a_parametro])}
@@ -110,45 +111,58 @@ parametro_fecho {-> a_parametro} =
 parametro {-> a_parametro} = 
       tipo identificador {-> New a_parametro.a_parametro(tipo.a_tipo, identificador)};
 
-bloco = bloco_i dec_variavel* comando* bloco_f;
+bloco {-> a_bloco} = 
+      bloco_i dec_variavel* comando* bloco_f {-> New a_bloco.a_bloco([dec_variavel.a_dec_variavel], [comando.a_comando])};
 
-atrib = var atribuicao exp;
+atrib {-> a_atrib} = 
+      var atribuicao exp {-> New a_atrib.a_atrib(var.a_var, exp.a_exp)};
 
-lista_atrib = atrib virg_atrib_fecho*;
+lista_atrib {-> a_lista_atrib} = 
+      atrib virg_atrib_fecho* {-> New a_lista_atrib.a_lista_atrib([atrib.a_atrib, virg_atrib_fecho.a_atrib])};
 
-virg_atrib_fecho = virg atrib;
+virg_atrib_fecho {-> a_atrib} = 
+      virg atrib {-> atrib.a_atrib};
 
-comando = {comando_casam} comando_casam
-        | {comando_nao_casam} comando_nao_casam;
+comando {-> a_comando} = 
+      {comando_casam} comando_casam                   {-> comando_casam.a_comando}
+        | {comando_nao_casam} comando_nao_casam       {-> comando_nao_casam.a_comando};
 
-comando_nao_casam = {comando_se_senao} ctr_se par_esq exp par_dir [esq]:comando_nao_casam ctr_senao [dir]:comando_nao_casam
-        | {comando_atrib} atrib ponto
-        | {comando_retorne} sbrt_retorne exp? ponto
-        | {comando_bloco} bloco
-        | {comando_chamada} chamada ponto;
+comando_nao_casam {-> a_comando} = 
+      {comando_se_senao} ctr_se par_esq exp par_dir [esq]:comando_nao_casam ctr_senao [dir]:comando_nao_casam     {-> New a_comando.a_se_senao(exp.a_exp, esq.a_comando, dir.a_comando)}
+        | {comando_atrib} atrib ponto                                                                             {-> New a_comando.a_atrib(atrib.a_atrib)}
+        | {comando_retorne} sbrt_retorne exp ponto                                                                {-> New a_comando.a_retorne(exp.a_exp)}
+        | {comando_retorne_empty} sbrt_retorne ponto                                                              {-> New a_comando.a_retorne(Null)}
+        | {comando_bloco} bloco                                                                                   {-> New a_comando.a_bloco(bloco.a_bloco)}
+        | {comando_chamada} chamada ponto                                                                         {-> New a_comando.a_chamada(chamada.a_chamada)};
 
-comando_casam = {comando_se} ctr_se par_esq exp par_dir comando
-              | {comando_se_senao} ctr_se par_esq exp par_dir comando_nao_casam ctr_senao comando_casam
-              | {comando_enquanto} ctr_enquanto par_esq exp par_dir comando
-              | {comando_para} ctr_para par_esq [esq1]:lista_atrib [esq2]:sep_for exp [dir1]:sep_for [dir2]:lista_atrib par_dir comando
-              | {comando_para_cada} ctr_para_cada par_esq tipo [esq1]:identificador ctr_para_cada_sep [esq2]:identificador par_dir comando;
+comando_casam {-> a_comando} = 
+            {comando_se} ctr_se par_esq exp par_dir comando                                                                               {-> New a_comando.a_se(exp.a_exp, comando.a_comando)}
+              | {comando_se_senao} ctr_se par_esq exp par_dir comando_nao_casam ctr_senao comando_casam                                   {-> New a_comando.a_se_senao(exp.a_exp, comando_nao_casam.a_comando, comando_casam.a_comando)}
+              | {comando_enquanto} ctr_enquanto par_esq exp par_dir comando                                                               {-> New a_comando.a_enquanto(exp.a_exp, comando.a_comando)}
+              | {comando_para} ctr_para par_esq [esq1]:lista_atrib [esq2]:sep_for exp [dir1]:sep_for [dir2]:lista_atrib par_dir comando   {-> New a_comando.a_para(esq1.a_lista_atrib, exp.a_exp, dir2.a_lista_atrib, comando.a_comando)}
+              | {comando_para_cada} ctr_para_cada par_esq tipo [esq]:identificador ctr_para_cada_sep [dir]:identificador par_dir comando  {-> New a_comando.a_para_cada(tipo.a_tipo, esq, dir, comando.a_comando)};
 
 
 var {-> a_var} = 
       {id} identificador                        {-> New a_var.a_id(identificador)}
       | {id_exp} identificador colch_exp_colch+ {-> New a_var.a_id_exp(identificador, [colch_exp_colch.a_exp])};
 
-chamada = identificador par_esq lista_exp par_dir;
+chamada {-> a_chamada} = 
+      identificador par_esq lista_exp par_dir {-> New a_chamada.a_chamada(identificador, lista_exp.a_lista_exp)};
 
-numero_pos_neg = {num_pos} numero
-                | {num_neg} menos numero;
+numero_pos_neg {-> a_numero_pos_neg} = 
+                  {num_pos} numero        {-> New a_numero_pos_neg.num_pos(numero)}
+                | {num_neg} menos numero  {-> New a_numero_pos_neg.num_neg(numero)};
 
-lista_exp = {lista_exp} exp sep_exp_fecho*
-          | {empty};
+lista_exp {-> a_lista_exp} = 
+            {lista_exp} exp sep_exp_fecho*      {-> New a_lista_exp.a_lista_exp([exp.a_exp, sep_exp_fecho.a_exp])}
+          | {empty}                             {-> New a_lista_exp.a_empty()};
 
-sep_exp_fecho = sep_arg exp;
+sep_exp_fecho {-> a_exp} = 
+      sep_arg exp {-> exp.a_exp};
 
-exp {-> a_exp} = {exp_ou} exp_ou    {-> exp_ou.a_exp};
+exp {-> a_exp} = 
+      {exp_ou} exp_ou    {-> exp_ou.a_exp};
 
 exp_ou {-> a_exp} = {exp_ou} exp_ou bool_ou exp_e     {-> New a_exp.a_ou(exp_ou.a_exp, exp_e.a_exp)}
       | {exp_e} exp_e                                 {-> exp_e.a_exp};
@@ -176,26 +190,26 @@ exp_nao {-> a_exp} = {exp_nao} bool_nao exp_nao             {-> exp_nao.a_exp}
 
 exp_parentese_literais {-> a_exp} = 
       {exp_parentese} par_esq exp par_dir {-> exp.a_exp}
-      | {var} var                         {-> New a_exp.a_var(var)}
-      | {num} numero_pos_neg              {-> New a_exp.a_num(numero_pos_neg)}
+      | {var} var                         {-> New a_exp.a_var(var.a_var)}
+      | {num} numero_pos_neg              {-> New a_exp.a_num(numero_pos_neg.a_numero_pos_neg)}
       | {char} caractere                  {-> New a_exp.a_char(caractere)}
       | {bool} booleano                   {-> New a_exp.a_bool(booleano)}
       | {string} string                   {-> New a_exp.a_string(string)}
-      | {chamada} chamada                 {-> New a_exp.a_chamada(chamada)};
+      | {chamada} chamada                 {-> New a_exp.a_chamada(chamada.a_chamada)};
 
 Abstract Syntax Tree
 
-a_programa = {a_programa} [a_dec_variaveis]:a_dec_variavel* [a_dec_funcoes]:a_dec_funcao;
+a_programa = {a_programa} [a_dec_variaveis]:a_dec_variavel* [a_dec_funcoes]:a_dec_funcao*;
 
 a_dec_variavel = {a_dec_variaveis} a_tipo [variaveis]:a_var+;
 
-a_dec_funcao = {a_dec_funcoes} a_tipo_retorno identificador parametros bloco
-            | {a_dec_funcoes_comeco} a_tipo_retorno identificador parametros bloco;
+a_dec_funcao = {a_dec_funcoes} a_tipo_retorno identificador a_parametros a_bloco
+            | {a_dec_funcoes_comeco} a_tipo_retorno identificador a_parametros a_bloco;
 
-a_parametros = {a_param} [parametros]:a_parametro+;
-
-a_parametro = {a_parametro} a_tipo identificador 
+a_parametros = {a_param} [parametros]:a_parametro+
             | {a_empty};
+
+a_parametro = {a_parametro} a_tipo identificador;
 
 a_tipo = {a_tipo_base} a_tipo_base 
       | {a_tipo_vetor} a_tipo_base [exps]:a_exp+;     
@@ -210,6 +224,30 @@ a_tipo_retorno = {a_tipo} a_tipo
 a_var = {a_id} identificador
       | {a_id_exp} identificador [exps]:a_exp+;
 
+a_bloco = {a_bloco} [a_dec_variaveis]:a_dec_variavel* [a_comandos]:a_comando*;
+
+a_comando = {a_se_senao} a_exp [esq]:a_comando [dir]:a_comando
+            | {a_se} a_exp a_comando
+            | {a_enquanto} a_exp a_comando
+            | {a_para} [esq]:a_lista_atrib a_exp [dir]:a_lista_atrib a_comando
+            | {a_para_cada} a_tipo [esq]:identificador [dir]:identificador a_comando
+            | {a_retorne} a_exp?
+            | {a_atrib} a_atrib
+            | {a_bloco} a_bloco
+            | {a_chamada} a_chamada;
+
+a_lista_atrib = {a_lista_atrib} [atributos]:a_atrib+;
+
+a_atrib = {a_atrib} a_var a_exp;
+
+a_chamada = {a_chamada} identificador a_lista_exp;
+
+a_lista_exp = {a_lista_exp} [exps]:a_exp+
+            | {a_empty};
+
+a_numero_pos_neg = {num_pos} numero
+            | {num_neg} numero;
+
 a_exp = {a_ou} [esq]:a_exp [dir]:a_exp
       | {a_e} [esq]:a_exp [dir]:a_exp
       | {a_igual} [esq]:a_exp [dir]:a_exp
@@ -221,9 +259,9 @@ a_exp = {a_ou} [esq]:a_exp [dir]:a_exp
       | {a_subtracao} [esq]:a_exp [dir]:a_exp
       | {a_mult} [esq]:a_exp [dir]:a_exp
       | {a_div} [esq]:a_exp [dir]:a_exp
-      | {a_var} var
-      | {a_num} numero_pos_neg 
+      | {a_var} a_var
+      | {a_num} a_numero_pos_neg 
       | {a_char} caractere
       | {a_bool} booleano
       | {a_string} string
-      | {a_chamada} chamada;
+      | {a_chamada} a_chamada;
