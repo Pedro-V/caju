@@ -44,6 +44,7 @@ public class Main {
     //tree.apply(new ASTPrinter());
     //Imprime árvore em interface gráfica
       tree.apply(new ASTDisplay());
+      tree.apply(new Semantico());
     } catch(Exception e) {
       System.out.println(e.getMessage());
     }
