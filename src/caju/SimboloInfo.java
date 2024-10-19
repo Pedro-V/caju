@@ -1,14 +1,11 @@
 package caju;
 
-import java.util.HashMap;
-import java.util.Stack;
-
 public class SimboloInfo {
     // informações do simbolo
     String tipo;
-    Bool atribuido;
+    Boolean atribuido;
 
-    public SimboloInfo(String tipo, Bool atribuido) {
+    public SimboloInfo(String tipo, Boolean atribuido) {
         this.tipo = tipo;
         this.atribuido = atribuido;
     }
