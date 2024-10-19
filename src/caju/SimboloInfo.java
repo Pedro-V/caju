@@ -9,4 +9,8 @@ public class SimboloInfo {
         this.tipo = tipo;
         this.atribuido = atribuido;
     }
+
+    public void valor_atribuido() {
+        atribuido = true;
+    }
 }

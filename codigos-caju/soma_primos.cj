@@ -5,7 +5,7 @@
 vetor numero[100000 + 1] memo.
 
 -> numero meu_programa() inicio
-  numero a, b.
+  numero a, b, resultado.
   vetor numero[100000 + 1] primos.
 
   init_memo().
