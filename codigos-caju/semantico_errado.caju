@@ -1,0 +1,45 @@
+{
+  Cada função nesse programa é um teste para o semântico de Caju.
+  Todas funções, exceto `programa()`, possuem erros semânticos.
+  O nome da função o tipo de erro.
+
+  Um erro implícito é a não-declaração de um ponto inicial pro programa.
+}
+
+vazio z_fora_escopo_atrib() inicio
+  numero x, y.
+  inicio
+    numero x.
+    z := y + x.
+    exibir(x | y | z).
+  fim
+fim
+
+vazio z_fora_escopo_chamada_funcao() inicio
+  numero x, y.
+  exibir(x | y | z).
+fim
+
+vazio z_fora_escopo_operacao() inicio
+  numero x, y.
+  y := x + y + z.
+fim
+
+vazio uso_funcao_nao_declarada() inicio
+  numero x, y.
+  x := 10.
+  y := 11.
+  funcao_nao_declarada(x | y).
+fim
+
+vazio tipo_errado_arithmetic() inicio
+  numero x.
+  caractere y.
+  x := 10.
+  y := 'o'.
+
+  exibir(x + y).
+  exibir(x * y).
+  exibir(x / y).
+  exibir(x - y).
+fim
